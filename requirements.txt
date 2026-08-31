@@ -1,0 +1,28 @@
+# 数据采集
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# 数据处理
+pandas>=2.0.0
+numpy>=1.24.0
+
+# 数据库
+# sqlite3 内置于 Python
+
+# 可视化
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.15.0
+
+# Excel 导出
+openpyxl>=3.1.0
+xlsxwriter>=3.1.0
+
+# Jupyter
+jupyter>=1.0.0
+ipykernel>=6.25.0
+
+# 工具
+python-dotenv>=1.0.0
+tqdm>=4.65.0

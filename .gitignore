@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Debug files
+debug_*.txt
+debug_*.html
+debug_*.png
+test_*.html
+test_*.txt
+
+# Cookie files (敏感信息)
+*cookie*.txt
+*cookie*.json
+
+# Temporary files
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Data files (可选择性忽略)
+# data/raw/
+# data/processed/
