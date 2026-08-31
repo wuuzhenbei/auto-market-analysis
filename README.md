@@ -146,16 +146,21 @@ auto-market-analysis/
 
 ## Web Dashboard 启动
 
-### 方案一：Streamlit（推荐，快速出活）
+### 方案一：Streamlit（推荐，完全独立）
 
 ```bash
-# 安装依赖
-pip install -r streamlit_app/requirements.txt
+# 一键部署（推荐）
+deploy.bat
 
-# 启动
+# 或手动启动
+pip install -r streamlit_app/requirements.txt
+python import_csv_to_db.py  # 导入数据
 streamlit run streamlit_app/app.py
 # 浏览器打开 http://localhost:8501
+# 或访问 https://autocar.050311.xyz
 ```
+
+**特点：** 完全独立运行，不需要启动后端API
 
 ### 方案二：FastAPI + Vue3（前后端分离）
 

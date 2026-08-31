@@ -1,9 +1,8 @@
 """
 汽车市场数据分析 - Streamlit 主入口
+完全独立运行，不依赖后端API
 """
 import streamlit as st
-import requests
-import time
 import sys
 from pathlib import Path
 
@@ -12,8 +11,6 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from streamlit_app.utils import get_market_overview, get_year_options
-
-API_BASE = "http://localhost:8000"
 
 # ========== 页面配置 ==========
 st.set_page_config(
@@ -73,48 +70,20 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.header("📥 数据导入")
 
-    if st.sidebar.button("🚗 从懂车帝导入数据", use_container_width=True):
-        st.session_state.show_import = True
+    st.sidebar.info("数据已从懂车帝采集完成（2026年1-7月）")
 
-    if st.session_state.get("show_import"):
-        with st.sidebar:
-            st.info("点击下方按钮启动导入，浏览器会自动打开懂车帝，请手动登录后系统会自动抓取数据。")
-            if st.button("▶ 启动导入", use_container_width=True):
-                try:
-                    resp = requests.post(f"{API_BASE}/api/import/dongchedi", timeout=5)
-                    if resp.status_code == 200:
-                        task_id = resp.json()["task_id"]
-                        st.session_state.import_task_id = task_id
-                        st.success(f"任务已启动: {task_id}")
-                    else:
-                        st.error("启动失败")
-                except Exception as e:
-                    st.error(f"连接后端失败: {e}")
-                    st.info("请确保 FastAPI 后端已启动: cd backend && uvicorn main:app --reload")
+    if st.sidebar.button("🔄 刷新数据", use_container_width=True):
+        st.cache_data.clear()
+        st.rerun()
 
-            # 显示导入进度
-            if st.session_state.get("import_task_id"):
-                task_id = st.session_state.import_task_id
-                try:
-                    resp = requests.get(f"{API_BASE}/api/import/status/{task_id}", timeout=5)
-                    if resp.status_code == 200:
-                        task = resp.json()
-                        status = task.get("status", "unknown")
-                        progress = task.get("progress", 0)
-                        message = task.get("message", "")
-
-                        if status == "done":
-                            st.success(f"✅ {message}")
-                            if st.button("刷新数据", use_container_width=True):
-                                st.cache_data.clear()
-                                st.rerun()
-                        elif status == "error":
-                            st.error(f"❌ {message}")
-                        else:
-                            st.progress(progress / 100)
-                            st.info(message)
-                except Exception:
-                    pass
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("""
+    **数据说明：**
+    - 数据来源：懂车帝
+    - 时间范围：2026年1-7月
+    - 每月前10名车型
+    - 共70条记录
+    """)
 
     # 加载概览数据
     overview = get_market_overview(selected_year)
