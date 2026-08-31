@@ -76,14 +76,77 @@ def main():
         st.cache_data.clear()
         st.rerun()
 
+    # ========== 数据导出 ==========
+    st.sidebar.markdown("---")
+    st.sidebar.header("📤 数据导出")
+
+    export_format = st.sidebar.selectbox("导出格式", ["Excel", "CSV", "Tableau", "Power BI"])
+
+    if st.sidebar.button("📥 导出数据", use_container_width=True):
+        with st.spinner("正在导出..."):
+            try:
+                import sys
+                sys.path.insert(0, str(PROJECT_ROOT))
+
+                if export_format == "Excel":
+                    from export.excel_exporter import ExcelExporter
+                    exporter = ExcelExporter()
+                    files = exporter.export_all(selected_year)
+                    exporter.close()
+                    st.sidebar.success(f"✅ 已导出 {len(files)} 个Excel文件")
+
+                elif export_format == "CSV":
+                    from streamlit_app.utils import load_sales_with_models
+                    df = load_sales_with_models(selected_year)
+                    csv = df.to_csv(index=False).encode('utf-8-sig')
+                    st.sidebar.download_button(
+                        label="📥 下载CSV",
+                        data=csv,
+                        file_name=f"sales_data_{selected_year}.csv",
+                        mime="text/csv"
+                    )
+
+                elif export_format == "Tableau":
+                    from export.tableau_exporter import TableauExporter
+                    exporter = TableauExporter()
+                    files = exporter.export_all()
+                    exporter.close()
+                    st.sidebar.success(f"✅ 已导出 {len(files)} 个CSV文件")
+
+                elif export_format == "Power BI":
+                    from export.powerbi_exporter import PowerBIExporter
+                    exporter = PowerBIExporter()
+                    files = exporter.export_all()
+                    exporter.close()
+                    st.sidebar.success(f"✅ 已导出 {len(files)} 个CSV文件")
+
+            except Exception as e:
+                st.sidebar.error(f"导出失败: {e}")
+
     st.sidebar.markdown("---")
     st.sidebar.markdown("""
     **数据说明：**
     - 数据来源：懂车帝
     - 时间范围：2026年1-7月
     - 每月前10名车型
-    - 共70条记录
+    - 共110条记录
     """)
+
+    # ========== 快速下载 ==========
+    st.sidebar.markdown("---")
+    st.sidebar.header("⚡ 快速下载")
+
+    from streamlit_app.utils import load_sales_with_models
+    df = load_sales_with_models(selected_year)
+
+    csv_data = df.to_csv(index=False).encode('utf-8-sig')
+    st.sidebar.download_button(
+        label="📥 下载当前数据 (CSV)",
+        data=csv_data,
+        file_name=f"auto_market_{selected_year}.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
 
     # 加载概览数据
     overview = get_market_overview(selected_year)

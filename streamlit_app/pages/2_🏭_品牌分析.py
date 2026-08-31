@@ -25,6 +25,24 @@ selected_categories = st.sidebar.multiselect("品牌类别", categories, default
 
 st.title("🏭 品牌分析")
 
+# 导出按钮
+col_export1, col_export2, col_export3 = st.columns([1, 1, 1])
+with col_export1:
+    if st.button("📥 导出Excel", use_container_width=True):
+        with st.spinner("导出中..."):
+            from export.excel_exporter import ExcelExporter
+            exporter = ExcelExporter()
+            exporter.export_brand_sales(selected_year)
+            exporter.close()
+            st.success("✅ 已导出到 data/excel/")
+with col_export2:
+    # 加载数据用于CSV导出
+    sales_df_export = load_sales_with_models(selected_year)
+    csv_data = sales_df_export.to_csv(index=False).encode('utf-8-sig')
+    st.download_button("📥 下载CSV", csv_data, f"brand_analysis_{selected_year}.csv", "text/csv", use_container_width=True)
+
+st.markdown("---")
+
 # 加载数据
 sales_df = load_sales_with_models(selected_year)
 ratings_df = load_ratings_with_models()

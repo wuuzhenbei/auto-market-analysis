@@ -24,6 +24,22 @@ selected_regions = st.sidebar.multiselect("区域", regions, default=regions)
 
 st.title("🗺️ 城市与区域分析")
 
+# 导出按钮
+col_export1, col_export2, col_export3 = st.columns([1, 1, 1])
+with col_export1:
+    if st.button("📥 导出Excel", use_container_width=True):
+        with st.spinner("导出中..."):
+            from export.excel_exporter import ExcelExporter
+            exporter = ExcelExporter()
+            exporter.export_city_sales(selected_year)
+            exporter.close()
+            st.success("✅ 已导出到 data/excel/")
+with col_export2:
+    csv_data = city_df.to_csv(index=False).encode('utf-8-sig') if 'city_df' in locals() else b''
+    st.download_button("📥 下载CSV", csv_data, f"city_analysis_{selected_year}.csv", "text/csv", use_container_width=True)
+
+st.markdown("---")
+
 # 加载数据
 city_df = load_city_sales(selected_year)
 city_df = city_df[city_df["region"].isin(selected_regions)]

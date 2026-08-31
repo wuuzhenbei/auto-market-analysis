@@ -22,6 +22,23 @@ selected_year = st.sidebar.selectbox("选择年份", years, index=len(years) - 1
 
 st.title("📊 市场总览")
 
+# 导出按钮
+col_export1, col_export2, col_export3 = st.columns([1, 1, 1])
+with col_export1:
+    if st.button("📥 导出Excel", use_container_width=True):
+        with st.spinner("导出中..."):
+            from export.excel_exporter import ExcelExporter
+            exporter = ExcelExporter()
+            exporter.export_brand_sales(selected_year)
+            exporter.export_model_sales(selected_year)
+            exporter.close()
+            st.success("✅ 已导出到 data/excel/")
+with col_export2:
+    csv_data = sales_df.to_csv(index=False).encode('utf-8-sig') if 'sales_df' in locals() else b''
+    st.download_button("📥 下载CSV", csv_data, f"market_overview_{selected_year}.csv", "text/csv", use_container_width=True)
+
+st.markdown("---")
+
 # KPI 卡片
 overview = get_market_overview(selected_year)
 col1, col2, col3, col4, col5, col6 = st.columns(6)
