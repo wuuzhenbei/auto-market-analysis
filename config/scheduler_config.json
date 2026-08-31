@@ -1,0 +1,14 @@
+{
+  "collect_time": "02:00",
+  "validate_time": "03:00",
+  "export_time": "04:00",
+  "collect_day": 1,
+  "email_alert": false,
+  "email_config": {
+    "smtp_server": "smtp.qq.com",
+    "smtp_port": 465,
+    "sender": "your_email@qq.com",
+    "password": "your_password",
+    "receivers": ["receiver@example.com"]
+  }
+}

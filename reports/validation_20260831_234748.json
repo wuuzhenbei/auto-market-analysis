@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-08-31T23:47:48.036895",
+  "has_errors": false,
+  "has_warnings": false,
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "sales_count": 110,
+    "total_sales": 1931056,
+    "model_count": 55,
+    "brand_count": 26,
+    "rating_count": 50
+  }
+}
